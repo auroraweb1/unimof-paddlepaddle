@@ -154,3 +154,146 @@ nohup python -m paddle.distributed.launch \
    - 从 `--fp16-init-scale` 和 `--fp16-scale-window` 改为 Paddle 的 `--fp16_opt_level`
 5. 日志和保存：
    - 保留了相同的日志和模型保存逻辑
+
+### 跨系统气体吸附性质微调
+
+```
+#!/bin/bash
+
+data_path="./cross-system_gas_adsorption_property_prediction"  # 数据路径
+save_dir="./save_finetune"  # 保存路径
+n_gpu=8
+MASTER_PORT=10086
+task_name="CoRE"  # 属性预测任务名称
+num_classes=1
+exp_name="mof_v2"
+weight_path="./weights/checkpoint.pdparams"  # 改为Paddle权重格式
+lr=3e-4
+batch_size=8
+epoch=50
+dropout=0.2
+warmup=0.06
+update_freq=2
+global_batch_size=`expr $batch_size \* $n_gpu \* $update_freq`
+ckpt_dir="${exp_name}_${task_name}_trial"
+
+# PaddlePaddle分布式环境配置
+export FLAGS_sync_nccl_allreduce=1
+export FLAGS_fraction_of_gpu_memory_to_use=0.8
+export PADDLE_NCCL_FORCE_SYNC=1
+export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+
+# PaddlePaddle分布式启动命令
+nohup python -m paddle.distributed.launch \
+    --gpus="0,1,2,3,4,5,6,7" \
+    --log_dir=${save_dir}/logs \
+    train.py \
+    --data_path=$data_path \
+    --task_name=$task_name \
+    --train_subset train \
+    --valid_subset valid,test \
+    --num_workers 8 \
+    --task unimof_v2 \
+    --loss mof_v2_mse \
+    --arch unimof_v2 \
+    --optimizer adam \
+    --beta1 0.9 \
+    --beta2 0.99 \
+    --epsilon 1e-6 \
+    --clip_norm 1.0 \
+    --lr_scheduler polynomial_decay \
+    --learning_rate $lr \
+    --warmup_ratio $warmup \
+    --max_epoch $epoch \
+    --batch_size $batch_size \
+    --update_freq $update_freq \
+    --seed 1 \
+    --use_amp \
+    --amp_level O2 \
+    --num_classes $num_classes \
+    --pooler_dropout $dropout \
+    --finetune_mol_model $weight_path \
+    --log_interval 500 \
+    --validate_interval_updates 500 \
+    --remove_hydrogen \
+    --save_interval_updates 1000 \
+    --keep_interval_updates 10 \
+    --no_epoch_checkpoints \
+    --keep_best_checkpoints 1 \
+    --save_dir ./logs_finetune/$save_dir \
+    --best_checkpoint_metric valid_r2 \
+    --maximize_best_checkpoint_metric \
+    > ./logs_finetune/$save_dir.log 2>&1 &
+```
+
+### 单系统气体吸附性质微调
+
+```
+#!/bin/bash
+
+data_path="./single-system_gas_adsorption_property_prediction"  # replace to your data path
+save_dir="./save_finetune"  # replace to your save path
+n_gpu=8
+MASTER_PORT=10086
+task_name="CoRE_PLD"  # property prediction task name
+num_classes=1
+exp_name='mof_v1'
+weight_path="./weights/checkpoint.pdparams"  # changed to PaddlePaddle weight format
+lr=3e-4
+batch_size=8
+epoch=50
+dropout=0.2
+warmup=0.06
+update_freq=2
+global_batch_size=`expr $batch_size \* $n_gpu \* $update_freq`
+
+# PaddlePaddle 分布式训练环境变量
+export FLAGS_sync_nccl_allreduce=1
+export FLAGS_fraction_of_gpu_memory_to_use=0.8
+export PADDLE_NCCL_FORCE_SYNC=1
+export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+
+# PaddlePaddle 分布式启动命令
+nohup python -m paddle.distributed.launch \
+    --gpus="0,1,2,3,4,5,6,7" \
+    --log_dir=${save_dir}/logs \
+    train.py \
+    --data_path=$data_path \
+    --task_name=$task_name \
+    --train_subset train \
+    --valid_subset valid,test \
+    --num_workers 8 \
+    --task unimof_v1 \
+    --loss mof_v1_mse \
+    --arch unimat_base \
+    --optimizer adam \
+    --beta1 0.9 \
+    --beta2 0.99 \
+    --epsilon 1e-6 \
+    --weight_decay 0.0 \
+    --clip_norm 1.0 \
+    --lr_scheduler polynomial_decay \
+    --learning_rate $lr \
+    --warmup_ratio $warmup \
+    --max_epoch $epoch \
+    --batch_size $batch_size \
+    --update_freq $update_freq \
+    --seed 1 \
+    --fp16 \
+    --fp16_opt_level O2 \
+    --num_classes $num_classes \
+    --pooler_dropout $dropout \
+    --finetune_from_model $weight_path \
+    --log_interval 100 \
+    --validate_interval 1 \
+    --remove_hydrogen \
+    --save_interval_updates 1000 \
+    --keep_interval_updates 10 \
+    --no_epoch_checkpoints \
+    --keep_best_checkpoints 1 \
+    --save_dir ./logs_finetune/$save_dir \
+    --best_checkpoint_metric valid_r2 \
+    --maximize_best_checkpoint_metric \
+    > ./logs_finetune/$save_dir.log 2>&1 &
+```
+
