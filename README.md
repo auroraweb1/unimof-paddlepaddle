@@ -228,7 +228,9 @@ nohup python -m paddle.distributed.launch \
 
 ### 单系统气体吸附性质微调
 
-以MOF结构特征的预测为例，可能需要4个小时才能获得测试集上最佳的模型性能[判定系数(R2)]。数据集下载链接为https://github.com/auroraweb1/unimof-paddlepaddle/releases/download/v2.1.0-beta/mof_database.zip。
+以MOF结构特征的预测为例，可能需要4个小时才能获得测试集上最佳的模型性能[判定系数(R2)]。
+
+数据集下载链接为https://github.com/auroraweb1/unimof-paddlepaddle/releases/download/v2.1.0-beta/mof_database.zip
 
 ```
 #!/bin/bash
