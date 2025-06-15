@@ -5,7 +5,7 @@
 *Nature Communications* [[paper](https://www.nature.com/articles/s41467-024-46276-x)][[arXiv](https://chemrxiv.org/engage/chemrxiv/article-details/6447d756e4bbbe4bbf3afeaa)]<a href="https://bohrium.dp.tech/notebook/cca98b584a624753981dfd5f8bb79674" target="_parent"><img src="https://cdn.dp.tech/bohrium/web/static/images/open-in-bohrium.svg" alt="Open In Bohrium"/></a>
 
 <p align="center"><img src="unimof/figure/overview_new.jpg" width=60%></p>
-<p align="center"><b>Schematic illustration of the Uni-MOF framework</b></p>
+<p align="center"><b>Uni-MOF框架示意图</b></p>
 
 ## 论文概述
 
