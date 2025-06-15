@@ -302,6 +302,9 @@ nohup python -m paddle.distributed.launch \
 ```
 
 ## 验证
+
+我们在两个任务上验证了模型的性能：最大空腔直径（LCD）和孔隙率（Void Fraction）的预测值与计算值之间的相关性。判定系数(R2)分别为0.7729和0.7128。
+
 ```
 # 设置路径
 DATA_PATH="/root/Uni-Mof-Main-PaddlePaddle/single-system_gas_adsorption_property_prediction"
