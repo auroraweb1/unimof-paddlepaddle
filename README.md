@@ -52,3 +52,5 @@
 ```bash
 docker pull dptechnology/unimol:latest-pytorch1.11.0-cuda11.3
 ```
+
+ - rdkit==2021.09.5, 通过`conda install -y -c conda-forge rdkit==2021.09.5`安装。
