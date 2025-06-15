@@ -3,7 +3,6 @@
 # ✅ 设置路径（根据你自己的目录修改）
 DATA_PATH="/home/single-system_gas_adsorption_property_prediction"
 USER_DIR="/home/unimof"
-MODEL_PATH="/home/save_finetune_single_gpu/CoRE_VF_bset.pt"
 RESULTS_PATH="/home/results"
 SCRIPT_PATH="/home/unimof/infer.py"
 
