@@ -140,17 +140,17 @@ nohup python -m paddle.distributed.launch \
     >> "./logs/${save_dir}.log" 2>&1 &
 ```
 
-主要变更点：
+脚本迁移的主要变更点：
 
-1. **分布式启动命令**：
+1. 分布式启动命令：
    - 从 `torch.distributed.launch` 改为 `paddle.distributed.launch`
    - `--nproc_per_node` 参数改为 `--gpus` 指定GPU列表
-2. **环境变量**：
+2. 环境变量：
    - 移除了 `NCCL_ASYNC_ERROR_HANDLING` 和 `OMP_NUM_THREADS`
    - 添加了 PaddlePaddle 特定的环境变量
-3. **参数命名风格**：
+3. 参数命名风格：
    - 将 PyTorch 的下划线风格参数名改为 PaddlePaddle 更常用的形式（如 `--lr` 改为 `--learning_rate`）
-4. **FP16 配置**：
+4. FP16 配置：
    - 从 `--fp16-init-scale` 和 `--fp16-scale-window` 改为 Paddle 的 `--fp16_opt_level`
-5. **日志和保存**：
+5. 日志和保存：
    - 保留了相同的日志和模型保存逻辑
