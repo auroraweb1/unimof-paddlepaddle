@@ -4,6 +4,9 @@
 
 *Nature Communications* [[paper](https://www.nature.com/articles/s41467-024-46276-x)][[arXiv](https://chemrxiv.org/engage/chemrxiv/article-details/6447d756e4bbbe4bbf3afeaa)]<a href="https://bohrium.dp.tech/notebook/cca98b584a624753981dfd5f8bb79674" target="_parent"><img src="https://cdn.dp.tech/bohrium/web/static/images/open-in-bohrium.svg" alt="Open In Bohrium"/></a>
 
+<p align="center"><img src="unimof/figure/overview_new.jpg" width=60%></p>
+<p align="center"><b>Schematic illustration of the Uni-MOF framework</b></p>
+
 ## 论文概述
 
 作者提出了一个用于**金属有机框架（MOF）材料气体吸附性能预测的通用机器学习框架——Uni-MOF**，可预测 MOF 材料在不同气体、温度和压力条件下的吸附性能，目标是作为一个“**气体吸附检测器**”。
