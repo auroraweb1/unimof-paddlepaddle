@@ -42,3 +42,13 @@
 
 - Uni-MOF 还可预测 MOF 的结构特征，如孔径、比表面积、孔隙率等（R²>0.99）。
 - 使用 t-SNE 可视化展示其学习到的结构嵌入与吸附行为的显著相关性。
+
+## 环境依赖
+
+ - [Uni-Core](https://github.com/dptech-corp/Uni-Core)，可以查看它的[下载文档](https://github.com/dptech-corp/Uni-Core#installation)，可能会花一定时间。
+
+可以使用以下命令直接拉取docker镜像：
+
+```bash
+docker pull dptechnology/unimol:latest-pytorch1.11.0-cuda11.3
+```
