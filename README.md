@@ -54,3 +54,88 @@ docker pull dptechnology/unimol:latest-pytorch1.11.0-cuda11.3
 ```
 
  - rdkit==2021.09.5, 通过`conda install -y -c conda-forge rdkit==2021.09.5`安装。
+
+## 训练
+
+### 材料预训练脚本
+
+```
+#!/bin/bash
+
+data_path="./examples/mof" # replace to your data path
+save_dir="./save/" # replace to your save path
+n_gpu=8
+MASTER_PORT=$1
+lr=3e-4
+wd=1e-4
+batch_size=8
+update_freq=2
+masked_token_loss=1
+masked_coord_loss=1
+masked_dist_loss=1
+dist_threshold=5.0
+minkowski_p=2.0
+lattice_loss=1
+x_norm_loss=0.01
+delta_pair_repr_norm_loss=0.01
+mask_prob=0.15
+noise_type='uniform'
+noise=1.0
+seed=1
+warmup_steps=10000
+max_steps=100000
+global_batch_size=`expr $batch_size \* $n_gpu \* $update_freq`
+
+# PaddlePaddle 分布式训练环境变量
+export FLAGS_sync_nccl_allreduce=1
+export FLAGS_fraction_of_gpu_memory_to_use=0.8
+export PADDLE_NCCL_FORCE_SYNC=1
+export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+
+# PaddlePaddle 分布式启动命令
+nohup python -m paddle.distributed.launch \
+    --gpus="0,1,2,3,4,5,6,7" \
+    --log_dir=${save_dir}/logs \
+    train.py \
+    --data_path=$data_path \
+    --train_subset train \
+    --valid_subset valid \
+    --num_workers 8 \
+    --task unimat \
+    --loss unimat \
+    --arch unimat_base \
+    --optimizer adam \
+    --beta1 0.9 \
+    --beta2 0.99 \
+    --epsilon 1e-6 \
+    --weight_decay $wd \
+    --lr_scheduler polynomial_decay \
+    --learning_rate $lr \
+    --warmup_steps $warmup_steps \
+    --max_steps $max_steps \
+    --update_freq $update_freq \
+    --seed $seed \
+    --fp16 \
+    --fp16_opt_level O2 \
+    --max_update $max_steps \
+    --log_interval 1000 \
+    --save_interval_updates 1000 \
+    --validate_interval_updates 1000 \
+    --keep_interval_updates 10 \
+    --no_epoch_checkpoints \
+    --masked_token_loss $masked_token_loss \
+    --masked_coord_loss $masked_coord_loss \
+    --masked_dist_loss $masked_dist_loss \
+    --x_norm_loss $x_norm_loss \
+    --delta_pair_repr_norm_loss $delta_pair_repr_norm_loss \
+    --lattice_loss $lattice_loss \
+    --mask_prob $mask_prob \
+    --noise_type $noise_type \
+    --noise $noise \
+    --batch_size $batch_size \
+    --dist_threshold $dist_threshold \
+    --minkowski_p $minkowski_p \
+    --remove_hydrogen \
+    --save_dir $save_dir \
+    >> "./logs/${save_dir}.log" 2>&1 &
+```
